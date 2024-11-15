@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tree Observation</title>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #648f7dff;
+            font-family: Arial, sans-serif;
+            color: #ffffff;
+
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #648f7dff;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            width: 200px;
+            font-size: 1em;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #8edfa0ff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #7ec990;
+        }
+
+        .tree-list {
+            margin-top: 20px;
+            text-align: left;
+            font-size: 1em;
+        }
+
+        .tree-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 5px 0;
+            padding: 10px;
+            background-color: #f4f4f9;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            color: black;
+        }
+
+        .tree-item button {
+            background-color: #40986d;
+        }
+
+        .tree-item button:hover {
+            background-color: #56bb91;
+        }
+
+        .post-it-container {
+            margin-top: 30px;
+            display: none;
+            background-color: #fdf5d8;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            margin: 0 auto;
+        }
+
+        .post-it-container textarea {
+            width: 100%;
+            height: 150px;
+            padding: 10px;
+            font-size: 1em;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .score {
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: black;
+        }
+
+        .note {
+            font-style: italic;
+            color: #555;
+        }
+        .button-container{
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-top: 20px;
+    }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Tree Observation</h1>
+        <p>Enter the trees you observe and they will add to your score. Click on a tree name to view or add notes.</p>
+
+        <!-- Input for tree observation -->
+        <input type="text" id="treeName" placeholder="Enter tree name">
+        <button onclick="addTree()">Add Tree</button>
+
+        <!-- Displaying tree list -->
+        <div class="tree-list" id="treeList"></div>
+
+        <!-- Score Display -->
+        <div class="score" id="score">Total Score: 0</div>
+
+        <!-- Button for Post-It Note -->
+        <button onclick="togglePostIt()">Add Notes</button>
+
+        <!-- Post-It Note Section -->
+        <div class="post-it-container" id="postItContainer">
+            <textarea id="notes" placeholder="Enter your notes here..."></textarea><br>
+            <button onclick="saveNotes()">Save Notes</button>
+        </div>
+    </div>
+    <div class = "button-container">
+        <button class="back-button" onclick="goBack()">⌂</button>
+    </div>
+    <script>
+        // Variables to keep track of trees, score, and notes
+        let trees = JSON.parse(localStorage.getItem('trees')) || [];
+        let notes = JSON.parse(localStorage.getItem('notes')) || {}; // Object to store notes for each tree
+        let totalScore = JSON.parse(localStorage.getItem('score')) || 0;
+
+        // Function to add a tree to the list
+        function addTree() {
+            const treeName = document.getElementById('treeName').value.trim();
+
+            // Check if the tree name is valid and not a duplicate
+            if (treeName && !trees.includes(treeName)) {
+                trees.push(treeName);
+                totalScore += 5;  // Add 5 points for each new tree
+                notes[treeName] = '';  // Initialize an empty note for the new tree
+                updateTreeList();
+                saveData();  // Save trees, notes, and score to localStorage
+                document.getElementById('treeName').value = '';  // Clear input
+            } else if (trees.includes(treeName)) {
+                alert("This tree has already been added.");
+            } else {
+                alert("Please enter a valid tree name.");
+            }
+        }
+
+        // Function to update the tree list and display score
+        function updateTreeList() {
+            const treeListDiv = document.getElementById('treeList');
+            treeListDiv.innerHTML = '';  // Clear current list
+
+            // Create a new list of trees
+            trees.forEach((tree, index) => {
+                const treeItem = document.createElement('div');
+                treeItem.classList.add('tree-item');
+
+                const treeText = document.createElement('span');
+                treeText.textContent = tree;
+
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = '-';
+                deleteButton.onclick = () => removeTree(index);
+
+                const viewNotesButton = document.createElement('button');
+                viewNotesButton.textContent = 'View Notes';
+                viewNotesButton.onclick = () => viewNotes(tree);
+
+                treeItem.appendChild(treeText);
+                treeItem.appendChild(viewNotesButton);
+                treeItem.appendChild(deleteButton);
+
+                treeListDiv.appendChild(treeItem);
+            });
+
+            // Update the score
+            document.getElementById('score').textContent = `Total Score: ${totalScore}`;
+        }
+
+        // Function to remove a tree from the list
+        function removeTree(index) {
+            const treeName = trees[index];
+            trees.splice(index, 1);
+            delete notes[treeName]; // Remove the note for the deleted tree
+            totalScore -= 5;  // Subtract 5 points for each removed tree
+            updateTreeList();
+            saveData();  // Save the updated data to localStorage
+        }
+
+        // Function to toggle the Post-It note section
+        function togglePostIt() {
+            const postItContainer = document.getElementById('postItContainer');
+            postItContainer.style.display = postItContainer.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Function to save notes for a specific tree
+        function saveNotes() {
+            const notesContent = document.getElementById('notes').value;
+            const treeName = document.getElementById('treeName').value;
+
+            if (treeName && notesContent.trim()) {
+                notes[treeName] = notesContent.trim(); // Save the note for the selected tree
+                alert("Notes saved successfully.");
+                document.getElementById('notes').value = '';  // Clear the notes input
+                togglePostIt();  // Close the post-it note section
+                updateTreeList();  // Update the tree list to reflect the new notes
+                saveData();  // Save the updated notes to localStorage
+            } else {
+                alert("Please enter both the tree name and notes before saving.");
+            }
+        }
+
+        // Function to view notes for a specific tree
+        function viewNotes(tree) {
+            const noteText = notes[tree] ? notes[tree] : 'No notes available for this tree.';
+            alert(`Notes for ${tree}:\n${noteText}`);
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('trees', JSON.stringify(trees));
+            localStorage.setItem('notes', JSON.stringify(notes));
+            localStorage.setItem('score', JSON.stringify(totalScore));
+        }
+        function goBack() {
+            window.location.href = "menu.html"; // Replace with your actual menu page URL
+        }
+
+        // Initialize the page with saved data
+        updateTreeList();
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Menu</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: #648f7dff;
+            color: white;
+            font-family: Arial, sans-serif;
+            margin: 10;
+            height: 100vh;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .menu-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-gap: 20px;
+            width: 60%;
+            max-width: 800px;
+        }
+
+        .menu-item {
+            width: 140px;
+            height: 140px;
+            background-color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #648f7dff;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .menu-item:hover {
+            transform: scale(1.05);
+        }
+
+        .menu-item img {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 5px;
+        }
+
+        .menu-item p {
+            font-size: 1.1em;
+            color: #648f7dff;
+        }
+
+        .menu-container p {
+            margin-top: 10px;
+        }
+        .profile-icon {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            overflow: hidden;
+            background-color: #ffffff;
+        }
+
+        .profile-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>Main Menu</h1>
+
+    <!-- Profile icon that links back to the profile page -->
+    <div class="profile-icon">
+        <a href="profile.html">
+            <img id="profileImage" src="download.png" alt="Profile Icon">
+        </a>
+    </div>
+    <!-- Menu Container -->
+    <div class="menu-container">
+
+        <!-- Button 1 - GreenRec -->
+        <div class="menu-item" onclick="redirectToPage('greenrec.html')">
+            <img src="9.jpg" alt="GreenRec">
+            <p>GreenRec</p>
+        </div>
+
+        <!-- Button 2 - GreenLog -->
+        <div class="menu-item" onclick="redirectToPage('greenlog.html')">
+            <img src="8.jpg" alt="GreenLog">
+            <p>GreenLog</p>
+        </div>
+
+        <!-- Button 3 - GreenCarbon -->
+        <div class="menu-item" onclick="redirectToPage('greencarbon.html')">
+            <img src="7.jpg" alt="GreenCarbon">
+            <p>GreenCarbon</p>
+        </div>
+
+        <!-- Button 4 - GreenMap -->
+        <div class="menu-item" onclick="redirectToPage('greenadopt.html')">
+            <img src="6.jpg" alt="GreenAdopt">
+            <p>Adopt A Tree</p>
+        </div>
+
+        <!-- Button 5 - GreenArea -->
+        <div class="menu-item" onclick="redirectToPage('greenarea.html')">
+            <img src="5.jpg" alt="GreenArea">
+            <p>GreenArea</p>
+        </div>
+
+        <!-- Button 6 - GreenLens -->
+        <div class="menu-item" onclick="redirectToPage('greenlens1.html')">
+            <img src="4.jpg" alt="GreenLens">
+            <p>GreenLens</p>
+        </div>
+
+        <!-- Button 7 - GreenGallery -->
+        <div class="menu-item" onclick="redirectToPage('greengallery.html')">
+            <img src="3.jpg" alt="GreenGallery">
+            <p>GreenGallery</p>
+        </div>
+
+
+    </div>
+
+    <script>
+        // Function to redirect to respective pages
+        function redirectToPage(page) {
+            window.location.href = page;
+        }
+    </script>
+
+</body>
+</html>

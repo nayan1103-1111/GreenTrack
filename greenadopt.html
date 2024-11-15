@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adopt a Tree</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #648f7dff;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        h1, h3 {
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        label {
+            text-align: left;
+            font-size: 0.9em;
+        }
+
+        input, textarea, button {
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            font-size: 1em;
+        }
+
+        button {
+            background-color: #fff;
+            color: #648f7dff;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .summary, .notifications, .health-updates {
+            margin-top: 20px;
+            background-color: #546e5d;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: left;
+            color: #fff;
+            font-size: 0.9em;
+        }
+
+        .back-button {
+            margin-bottom: 20px;
+            color: #fff;
+            text-decoration: underline;
+            border: none;
+            background: none;
+            cursor: pointer;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .task-item input {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button class="back-button" onclick="goBack()">Back to Home</button>
+        <h1>Adopt a Tree</h1>
+
+        <form id="treeForm">
+            <label for="treeSpecies">Enter Tree Species:</label>
+            <input type="text" id="treeSpecies" placeholder="E.g., Mango, Neem" required>
+
+            <label for="treeNickname">Give your tree a nickname:</label>
+            <input type="text" id="treeNickname" placeholder="Enter a nickname" required>
+
+            <button type="submit">Adopt Tree</button>
+        </form>
+
+        <div class="summary" id="summary">
+            <h3>Adopted Trees Summary</h3>
+            <p id="treeCount">You have adopted 0 trees.</p>
+            <ul id="treeList">
+                <!-- List of adopted trees will appear here -->
+            </ul>
+        </div>
+
+        <div class="notifications" id="notifications">
+            <h3>Tree Care Notifications</h3>
+            <ul id="taskList">
+                <!-- Notifications will appear here -->
+            </ul>
+        </div>
+
+        <div class="health-updates" id="healthUpdates">
+            <h3>Tree Health Updates</h3>
+            <ul id="healthList">
+                <!-- Health updates will appear here -->
+            </ul>
+
+            <form id="healthForm">
+                <textarea id="healthUpdateText" placeholder="Enter health update..." required></textarea>
+                <button type="submit">Add Health Update</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Mock user data with storage support
+        let userData = {
+            profile: {
+                treesAdopted: [],
+                treesCount: 0,
+            },
+            healthTasks: [],
+            healthUpdates: []
+        };
+
+        // Load data from local storage if available
+        function loadUserData() {
+            const data = localStorage.getItem('userData');
+            if (data) {
+                userData = JSON.parse(data);
+                updateSummary();
+                updateNotifications();
+                updateHealthUpdates();
+            }
+        }
+
+        // Save data to local storage
+        function saveUserData() {
+            localStorage.setItem('userData', JSON.stringify(userData));
+        }
+
+        const taskRotations = [
+            { task: "Water the tree", dueIn: "2 days" },
+            { task: "Check leaves for diseases", dueIn: "3 days" },
+            { task: "Prune branches", dueIn: "5 days" }
+        ];
+
+        const treeForm = document.getElementById("treeForm");
+        const taskList = document.getElementById("taskList");
+        const healthForm = document.getElementById("healthForm");
+        const healthList = document.getElementById("healthList");
+        const treeList = document.getElementById("treeList");
+        const treeCount = document.getElementById("treeCount");
+
+        // Navigate back to home
+        function goBack() {
+            alert("Navigating back to home!");
+            // Simulate navigation, replace with your actual logic
+        }
+
+        // Handle tree adoption
+        treeForm.addEventListener("submit", (event) => {
+            event.preventDefault();
+
+            // Get form data
+            const species = document.getElementById("treeSpecies").value;
+            const nickname = document.getElementById("treeNickname").value;
+
+            // Add tree to user data
+            const treeId = Date.now(); // Unique ID for the tree
+            const newTree = { id: treeId, species, nickname };
+            userData.profile.treesAdopted.push(newTree);
+            userData.profile.treesCount++;
+
+            // Add initial tasks
+            taskRotations.forEach((rotation) => {
+                const task = { ...rotation, id: Date.now() + Math.random(), treeId, completed: false };
+                userData.healthTasks.push(task);
+            });
+
+            // Update UI and save data
+            alert(`You have adopted a ${species} tree named "${nickname}"!`);
+            updateSummary();
+            updateNotifications();
+            saveUserData();
+
+            // Reset form
+            treeForm.reset();
+        });
+
+        // Update the summary of adopted trees
+        function updateSummary() {
+            // Update tree count
+            treeCount.textContent = `You have adopted ${userData.profile.treesCount} tree(s).`;
+
+            // Update list of adopted trees
+            treeList.innerHTML = "";
+            userData.profile.treesAdopted.forEach(tree => {
+                const listItem = document.createElement("li");
+                listItem.textContent = `${tree.nickname} (${tree.species})`;
+                treeList.appendChild(listItem);
+            });
+        }
+
+        // Update care notifications with checkbox functionality
+        function updateNotifications() {
+            taskList.innerHTML = ""; // Clear old tasks
+
+            userData.healthTasks.forEach((task) => {
+                const tree = userData.profile.treesAdopted.find(t => t.id === task.treeId);
+                const listItem = document.createElement("li");
+                listItem.className = "task-item";
+
+                const checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.checked = task.completed;
+
+                checkbox.addEventListener("change", () => {
+                    if (checkbox.checked) {
+                        // Mark task as completed and remove it
+                        task.completed = true;
+                        userData.healthTasks = userData.healthTasks.filter(t => t.id !== task.id);
+
+                        // Schedule a new task for this tree
+                        const nextTask = getNextTask();
+                        const newTask = { ...nextTask, id: Date.now() + Math.random(), treeId: tree.id, completed: false };
+                        userData.healthTasks.push(newTask);
+
+                        updateNotifications();
+                        saveUserData();
+                    }
+                });
+
+                const taskText = document.createElement("span");
+                taskText.textContent = `${task.task} for ${tree.nickname} (${tree.species}) - Due in ${task.dueIn}`;
+                
+                listItem.appendChild(checkbox);
+                listItem.appendChild(taskText);
+                taskList.appendChild(listItem);
+            });
+        }
+
+        // Rotate through the task list to schedule the next task
+        function getNextTask() {
+            const nextTaskIndex = Math.floor(Math.random() * taskRotations.length);
+            return taskRotations[nextTaskIndex];
+        }
+
+        // Update health updates and save to local storage
+        healthForm.addEventListener("submit", (event) => {
+            event.preventDefault();
+
+            const updateText = document.getElementById("healthUpdateText").value;
+            const timestamp = new Date().toLocaleString();
+            const listItem = document.createElement("li");
+            listItem.textContent = `${timestamp}: ${updateText}`;
+
+            userData.healthUpdates.push({ timestamp, updateText });
+            healthList.appendChild(listItem);
+            saveUserData();
+            healthForm.reset();
+        });
+
+        //

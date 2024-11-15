@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale1.0">
+    <title>Login/Sign Up</title>
+    <style>
+         body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #648f7dff;
+            font-family: Arial, sans-serif;
+            color: #ffffff;
+
+        }
+        .form-container{
+            background-color: #ffffff;
+            height: 600px;
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            color: #648f7dff;
+            align-items: center;
+        }
+        h2{
+            text-align: center;
+            color: #648f7dff;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button{
+            width: 100%;
+            padding: 10px;
+            background-color: #8edfa0ff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            color: #ffffff;
+            cursor: pointer;
+        }
+
+        button:hover{
+            background-color: #76c88d;
+        }
+
+        .message{
+            margin-top: 15px;
+            font-size: 14px;
+            text-align: center;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <div class = "form-container">
+        <h2> Login/Sign Up </h2>
+        <form onsubmit="handleLogin(event)">
+            <input type="text" id = "username" placeholder="Username" required>
+            <input type = "password" id = "password" placeholder="Password" required>
+            <button type = "submit">Submit</button>
+        </form>
+        <div id = "message" class="message"></div>
+    </div>
+    <script>
+        function handleLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+            const storedPassword = localStorage.getItem(username);
+            const storedProfileImage = localStorage.getItem("profileImage");
+            const message = document.getElementById("message")
+            if (storedPassword){
+                if (storedPassword ===password){
+                    localStorage.setItem("username", username)
+                    if(storedProfileImage){
+                        localStorage.setItem("profileImage", storedProfileImage);
+                    }
+                    message.innerText = "Login Successful";
+                    message.style.color ="#8edfa0ff";
+                    window.location.href ="profile.html"
+                }else{
+                    message.innerText = "Incorrect password. Please try again.";
+                    message.style.color = "ff4d4d";
+                }
+            } else {
+                localStorage.setItem(username, password);
+                localStorage.setItem("username", unsername);
+                message.innerText = "Account created successfully!";
+                message.style.color = "#8edfa0ff";
+                window.location.href = "profile.html";
+            }
+        }
+        </script>
+</body>

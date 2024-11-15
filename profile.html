@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name = "viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <style>
+        body{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #648f7dff;
+            font-family: Arial, sans-serif;
+            color: #ffffff;
+
+        }
+        .profile-container{
+            background-color: #ffffff;
+            height: 600px;
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            color: #648f7dff;
+            text-align: center;
+        }
+        .profile-image{
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+            background-color: #8edfa0ff;
+
+        }
+        input[type="file"]{
+            display: block;
+            margin: 10px auto;
+            font-size: 14px;
+
+        }
+        .tree-counter{
+            margin: 20px 0;
+            font-size: 18px;
+        }
+        button{
+            background-color: #9edfa0ff;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            color: #ffffff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover{
+            background-color: : #76c88d;
+        }
+    </style>
+</head>
+<body>
+    <div class = "profile-container">
+        <h2>Welcome<span id="usernameDisplay"></span>!</h2>
+        <img src="" alt="Profile Picture" id="profileImage" class="profile-image">
+        <input type="file" id="profilePictureInput" accept="image/*" onchange="uploadProfilePicture()">
+        <button onclick="location.href = 'menu.html'">Main Menu</button>
+    </div>
+   <script>
+        // Display username from localStorage
+        document.getElementById("usernameDisplay").innerText = localStorage.getItem("username");
+
+        // Load the saved profile image if it exists
+        const savedProfileImage = localStorage.getItem("profileImage");
+        if (savedProfileImage) {
+            document.getElementById("profileImage").src = savedProfileImage;
+        }
+
+        // Display saved tree count
+        const treeCounter = document.getElementById("treeCounter");
+        const savedTreeCount = localStorage.getItem("treeCount") || 0;
+        treeCounter.innerText = savedTreeCount;
+
+        // Upload profile picture
+        function uploadProfilePicture() {
+            const file = document.getElementById("profilePictureInput").files[0];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById("profileImage").src = e.target.result;
+                localStorage.setItem("profileImage", e.target.result); // Save image to localStorage
+            };
+            reader.readAsDataURL(file);
+        }
+    </script>
+</body>
+</html>

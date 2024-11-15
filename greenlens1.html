@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Bucket Upload and Verification</title>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #648f7dff;
+            font-family: Arial, sans-serif;
+            color: rgb(131, 186, 163);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .buckets {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .bucket {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+            background-color: #e0e0e0;
+            border-radius: 8px;
+            text-align: center;
+            width: 150px;
+        }
+
+        .bucket img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .add-bucket {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            margin-top: 20px;
+            height: 50px;
+            width: 50px;
+        }
+
+        .bucket-form {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f0f0f0;
+            border-radius: 8px;
+        }
+
+        .bucket-form input[type="file"] {
+            margin-top: 10px;
+        }
+
+        .image-upload-section {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        #verification-result {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        #uploaded-image-preview img {
+            max-width: 100%;
+            margin-top: 20px;
+            max-height: 200px;
+        }
+
+        .bucket-buttons {
+            margin-top: 10px;
+        }
+
+        .delete-button {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .add-image-button {
+            background-color: #056547;
+            color: white;
+            border: none;
+            padding: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .home-button {
+            background-color: #2E8B57;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button class="home-button" onclick="goHome()">Back to Home</button>
+        <h1>Upload Images to Species Buckets</h1>
+
+        <div class="buckets">
+            <div id="bucket-container"></div>
+            <button id="add-bucket" class="add-bucket">+</button>
+        </div>
+
+        <div class="bucket-form" id="bucket-form">
+            <h3>Create New Bucket</h3>
+            <label for="species-name">Species Name:</label>
+            <input type="text" id="species-name" placeholder="Enter species name" required>
+            <input type="file" id="bucket-images" accept="image/*" multiple>
+            <button id="save-bucket">Save Bucket</button>
+        </div>
+
+        <div class="image-upload-section">
+            <h3>Upload Image for Verification</h3>
+            <input type="file" id="new-image" accept="image/*">
+            <button id="verify-image">Verify Image</button>
+            <p id="verification-result">Result: </p>
+            <div id="uploaded-image-preview"></div>
+        </div>
+    </div>
+
+    <script>
+        function goHome() {
+            window.location.href = 'menu.html'; // Change '/' to your homepage URL
+        }
+
+        // Existing JavaScript logic for the application goes here...
+        // Copy the rest of the JavaScript logic from your implementation.
+    </script>
+</body>
+</html>

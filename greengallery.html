@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo Scrapbook</title>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #648f7dff;
+            font-family: Arial, sans-serif;
+            color: #000000;
+
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #648f7dff;
+        }
+
+        .button {
+            padding: 10px 20px;
+            background-color: #8edfa0ff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin: 5px;
+        }
+
+        .button:hover {
+            background-color: #7ec990;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .label-input {
+            display: block;
+            margin-top: 15px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+            box-sizing: border-box;
+            color: black;
+        }
+
+        .scrapbook {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .scrapbook-item {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 150px;
+            margin: 10px;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .scrapbook-item img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+
+        .delete-button {
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            border-radius: 3px;
+        }
+
+        .delete-button:hover {
+            background-color: #ff1a1a;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-top: 20px;
+            color: #648f7dff;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Photo Scrapbook</h1>
+
+        <!-- Button to capture or upload photo -->
+        <input type="file" id="photoInput" accept="image/*" capture="environment" onchange="loadPhoto(event)">
+        <label class="button" for="photoInput">Take or Upload Photo</label>
+
+        <!-- Label input for photo -->
+        <input type="text" id="photoLabel" placeholder="Enter label for photo" class="label-input">
+
+        <!-- Button to add the photo to scrapbook -->
+        <button class="button" onclick="addPhoto()">Add to Scrapbook</button>
+
+        <!-- Scrapbook display -->
+        <div class="scrapbook" id="scrapbook"></div>
+
+        <!-- Back to menu button -->
+        <div class="back-button" onclick="window.location.href='menu.html'">Back to Menu</div>
+    </div>
+
+    <script>
+        let photos = JSON.parse(localStorage.getItem('photos')) || []; // Load saved photos from localStorage
+
+        // Function to load photo from input
+        function loadPhoto(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                localStorage.setItem('photoSrc', e.target.result); // Temporarily store the image data
+            };
+
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Function to add the photo to the scrapbook
+        function addPhoto() {
+            const imgSrc = localStorage.getItem('photoSrc'); // Retrieve the image data
+            const label = document.getElementById('photoLabel').value.trim();
+
+            if (imgSrc && label) {
+                photos.push({ src: imgSrc, label: label }); // Save photo and label
+                localStorage.removeItem('photoSrc'); // Clear temporary photo storage
+                document.getElementById('photoLabel').value = ''; // Clear label input
+                savePhotos();
+                displayPhotos();
+            } else {
+                alert("Please select a photo and enter a label before adding.");
+            }
+        }
+
+        // Function to save photos to localStorage
+        function savePhotos() {
+            localStorage.setItem('photos', JSON.stringify(photos));
+        }
+
+        // Function to display photos in scrapbook
+        function displayPhotos() {
+            const scrapbookDiv = document.getElementById('scrapbook');
+            scrapbookDiv.innerHTML = ''; // Clear current scrapbook display
+
+            photos.forEach((photo, index) => {
+                const photoDiv = document.createElement('div');
+                photoDiv.classList.add('scrapbook-item');
+
+                const img = document.createElement('img');
+                img.src = photo.src;
+                img.alt = photo.label;
+
+                const label = document.createElement('p');
+                label.textContent = photo.label;
+
+                const deleteButton = document.createElement('button');
+                deleteButton.classList.add('delete-button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.onclick = () => deletePhoto(index);
+
+                photoDiv.appendChild(img);
+                photoDiv.appendChild(label);
+                photoDiv.appendChild(deleteButton);
+
+                scrapbookDiv.appendChild(photoDiv);
+            });
+        }
+
+        // Function to delete a photo
+        function deletePhoto(index) {
+            photos.splice(index, 1); // Remove photo from array
+            savePhotos(); // Save updated photos to localStorage
+            displayPhotos(); // Refresh scrapbook display
+        }
+
+        // Load scrapbook on page load
+        displayPhotos();
+    </script>
+
+</body>
+</html>

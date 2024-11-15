@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name = "viewport" content="width=device-width, initial-scale = 1.0">
+    <title>GreenTrack</title>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            min-height: 100vh;
+            margin:0;
+            background-color: #648f7dff;
+            font-family: Arial, sans-serif;
+            color: #ffffff;
+        }
+
+        .image-container{
+            width: 400px;
+            height: 400px;
+            background-color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .progress-container{
+            width: 622px;
+            background-color: #ffffff;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .progress-bar{
+            height: 20px;
+            width: 0;
+            background-color: #8edfa0ff;
+            transition: width 0.3s;
+        }
+
+        @media(max-width: 600px){
+            h1{
+                font-size: 1.5em;
+                text-align: center;
+            }
+            .image-container,
+            .progress-bar{
+                width: 100%;
+            }
+            .progress-bar{
+                height: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>GreenTrack</h1>
+    <div class = "image-container">
+        <img src="homescreen.jpg" 0000 width="400" height="400">
+    </div>
+    <div class = "progress-container">
+        <div class = "progress-bar" id = "progressBar">
+    </div>
+    <script>
+        let progress = 0;
+        function autoIncreaseProgress(){
+            const progressBar = document.getElementById("progressBar");
+            const interval = setInterval(() =>{
+                if (progress<100){
+                    progress+=1;
+                    progressBar.style.width = progress+'%';
+                }else{
+                    clearInterval(interval);
+                    window.location.href = 'login.html'
+                }
+            },100);
+        }
+        window.onload = autoIncreaseProgress;
+    </script>
+    
+</body>
+</html>

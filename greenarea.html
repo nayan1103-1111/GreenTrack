@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Area Mapping</title>
+    <!-- Leaflet CSS and JavaScript -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #648f7dff;
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+        }
+        #map {
+            height: 400px;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #8edfa0ff;
+            border-radius: 8px;
+        }
+        .dashboard {
+            margin-top: 20px;
+        }
+        label, input, button {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: white;
+            color:#8edfa0ff;;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin: 5px;
+        }
+        .back-button {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Area Mapping and Tree Dashboard</h1>
+
+    <!-- Initial area selection prompt -->
+    <div id="area-selection">
+        <button onclick="displayJoinArea()">Join Existing Area</button>
+        <button onclick="displayCreateArea()">Create New Area</button>
+    </div>
+
+    <!-- Form to create a new area -->
+    <div id="create-area-form" style="display: none;">
+        <h2>Create New Area</h2>
+        <label for="areaName">Area Name</label>
+        <input type="text" id="areaName" placeholder="Enter area name" required>
+        
+        <label for="areaAddress">Address</label>
+        <input type="text" id="areaAddress" placeholder="Enter area address" required>
+
+        <label for="numberOfTrees">Number of Trees</label>
+        <input type="number" id="numberOfTrees" placeholder="Enter number of trees" required>
+
+        <button onclick="createArea()">Create Area</button>
+    </div>
+
+    <!-- Dashboard for an existing area -->
+    <div id="dashboard" class="dashboard" style="display: none;">
+        <h2>Area Dashboard</h2>
+        <p><b>Number of Trees:</b> <span id="treeCounter">0</span></p>
+        <p><b>Estimated Carbon Sequestration:</b> <span id="carbonCounter">0 kg</span></p>
+        <div id="map"></div>
+        
+        <label for="markerLabel">Enter Tree Label</label>
+        <input type="text" id="markerLabel" placeholder="e.g., Oak Tree" />
+        <button onclick="addMarker()">Add Marker</button>
+
+        <button class="back-button" onclick="backToMenu()">Back to Menu</button>
+    </div>
+</div>
+
+<script>
+    // Variables to store areas and map reference
+    let areaData = JSON.parse(localStorage.getItem('areas')) || [];  // Retrieve areas from local storage if available
+    let currentArea = null;
+    let map;
+
+    // Function to display join area form
+    function displayJoinArea() {
+        document.getElementById("area-selection").style.display = "none";
+        loadAreaDashboard();  // Load dashboard if areas already exist
+    }
+
+    // Function to display create area form
+    function displayCreateArea() {
+        document.getElementById("area-selection").style.display = "none";
+        document.getElementById("create-area-form").style.display = "block";
+    }
+
+    // Function to create a new area
+    function createArea() {
+        const areaName = document.getElementById("areaName").value;
+        const areaAddress = document.getElementById("areaAddress").value;
+        const numberOfTrees = parseInt(document.getElementById("numberOfTrees").value);
+
+        // Add new area to areaData array
+        const newArea = { name: areaName, address: areaAddress, trees: numberOfTrees, carbonSequestration: numberOfTrees * 21.77 };
+        areaData.push(newArea);
+        localStorage.setItem('areas', JSON.stringify(areaData));  // Save to local storage
+
+        loadAreaDashboard();
+    }
+
+    // Function to load the area dashboard
+    function loadAreaDashboard() {
+        currentArea = areaData[areaData.length - 1];  // Load the last added area
+
+        // Display area stats in the dashboard
+        document.getElementById("create-area-form").style.display = "none";
+        document.getElementById("dashboard").style.display = "block";
+        document.getElementById("treeCounter").innerText = currentArea.trees;
+        document.getElementById("carbonCounter").innerText = currentArea.carbonSequestration.toFixed(2) + " kg";
+
+        // Initialize the map centered on default or provided coordinates (if available)
+        map = L.map('map').setView([12.900150571487428, 77.61145312052747],13);  // Example coordinates
+
+        // Add OpenStreetMap tile layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+    }
+
+    // Function to add a marker with a label to the map
+    function addMarker() {
+        const markerLabel = document.getElementById("markerLabel").value;
+        if (markerLabel) {
+            const marker = L.marker(map.getCenter())
+                .addTo(map)
+                .bindPopup(`<b>${markerLabel}</b>`)
+                .openPopup();
+            document.getElementById("markerLabel").value = '';
+        } else {
+            alert('Please enter a tree label.');
+        }
+    }
+
+    // Back to menu
+    function backToMenu() {
+        window.location.href = 'menu.html';
+    }
+
+</script>
+
+</body>
+</html>
